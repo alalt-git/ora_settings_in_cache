@@ -1,0 +1,232 @@
+--------------------------------------------------------------------------
+-- Play this script in PARUS@DZMW_DEV to make it look like PARUS@DZMW_PRP
+--
+-- Please review the script before using it to make sure it won't
+-- cause any unacceptable data loss.
+--
+-- PARUS@DZMW_DEV Schema Extracted by User ESV 
+-- PARUS@DZMW_PRP Schema Extracted by User PARUS 
+
+CREATE TABLE MCRDKEP_SETTINGS
+(
+  RN        NUMBER,
+  CODE      VARCHAR2(100 BYTE),
+  NOTE      VARCHAR2(1000 BYTE),
+  ACTS      NUMBER(1)                           DEFAULT 0,
+  S_VAL     VARCHAR2(1000 BYTE),
+  N_VAL     NUMBER,
+  D_VAL     DATE,
+  S_CODING  VARCHAR2(100 BYTE),
+  FOR_USER  VARCHAR2(100 BYTE)
+)
+/
+
+CREATE OR REPLACE package PKG_MCRDKEP_OPT
+as
+
+-->>>>>>>>> MCRD SETTINGS >>>>>>>>>>>>>>
+
+ function get_fromcache_row
+ (
+ in_code  in varchar2
+ )
+ return mcrdkep_settings%rowtype
+ result_cache;
+
+ function get_fromcache_s
+ (
+ in_code  in varchar2
+ )
+ return mcrdkep_settings.s_val%type
+ result_cache;
+
+  function get_fromcache_n
+ (
+ in_code  in varchar2
+ )
+ return mcrdkep_settings.n_val%type
+ result_cache;
+ 
+ 
+ function get_fromcache_d
+ (
+ in_code  in varchar2
+ )
+ return mcrdkep_settings.d_val%type
+ result_cache;
+
+--<<<<<<<<< MCRD SETTINGS <<<<<<<<<<<<<<
+
+  function BT
+  /* Return format_error_stack + format_error_backtrace */
+  return varchar2;
+
+end;
+
+
+
+/
+
+SHOW ERRORS;
+
+CREATE OR REPLACE package body PKG_MCRDKEP_OPT
+as
+
+-->>>>>>>>> SETTINGS >>>>>>>>>>>>>>
+
+ function get_fromcache_row
+ (
+ in_code  in varchar2
+ )
+ return mcrdkep_settings%rowtype
+ result_cache
+ as
+ RES   mcrdkep_settings%rowtype;
+ BEGIN
+
+   begin
+      select /*+ RESULT_CACHE */
+             x.*
+      into   RES
+      from   (
+              select /*+ RESULT_CACHE */
+                     t.*
+              from   MCRDKEP_SETTINGS t
+              where  1=1
+              and    t.acts        = 1
+              and    t.code        = in_code
+              and    ((t.for_user is null or upper(t.for_user) = upper(USER)))
+              order by t.for_user
+              ) x
+      where rownum = 1
+     ;
+     exception
+       when OTHERS then p_exception(0,'get_fromcache_row - Ошибка определения настроек для '||in_code||' / '||BT);
+   end;
+   return RES;
+
+ END;
+
+
+ function get_fromcache_s
+ (
+ in_code  in varchar2
+ )
+ return mcrdkep_settings.s_val%type
+ result_cache
+ as
+ RES   mcrdkep_settings.s_val%type;
+ BEGIN
+
+   begin
+      select /*+ RESULT_CACHE */
+             x.s_val
+      into   RES
+      from   (
+              select /*+ RESULT_CACHE */
+                     t.s_val
+              from   MCRDKEP_SETTINGS t
+              where  1=1
+              and    t.acts        = 1
+              and    t.code        = in_code
+              and    ((t.for_user is null or upper(t.for_user) = upper(USER)))
+              order by t.for_user
+              ) x
+      where rownum = 1
+     ;
+     exception
+       when OTHERS then p_exception(0,'get_fromcache_s - Ошибка определения настроек для '||in_code||' / '||BT);
+   end;
+   return RES;
+
+ END;
+
+
+ function get_fromcache_n
+ (
+ in_code  in varchar2
+ )
+ return mcrdkep_settings.n_val%type
+ result_cache
+ as
+ RES   mcrdkep_settings.n_val%type;
+ BEGIN
+
+   begin
+      select /*+ RESULT_CACHE */
+             x.n_val
+      into   RES
+      from   (
+              select /*+ RESULT_CACHE */
+                     t.n_val
+              from   MCRDKEP_SETTINGS t
+              where  1=1
+              and    t.acts        = 1
+              and    t.code        = in_code
+              and    ((t.for_user is null or upper(t.for_user) = upper(USER)))
+              order by t.for_user
+              ) x
+      where rownum = 1
+     ;
+     exception
+       when OTHERS then p_exception(0,'get_fromcache_n - Ошибка определения настроек для '||in_code||' / '||BT);
+   end;
+   return RES;
+
+ END;
+
+ function get_fromcache_d
+ (
+ in_code  in varchar2
+ )
+ return mcrdkep_settings.d_val%type
+ result_cache
+ as
+ RES   mcrdkep_settings.d_val%type;
+ BEGIN
+
+   begin
+      select /*+ RESULT_CACHE */
+             x.d_val
+      into   RES
+      from   (
+              select /*+ RESULT_CACHE */
+                     t.d_val
+              from   MCRDKEP_SETTINGS t
+              where  1=1
+              and    t.acts        = 1
+              and    t.code        = in_code
+              and    ((t.for_user is null or upper(t.for_user) = upper(USER)))
+              order by t.for_user
+              ) x
+      where rownum = 1
+     ;
+     exception
+       when OTHERS then p_exception(0,'get_fromcache_n - Ошибка определения настроек для '||in_code||' / '||BT);
+   end;
+   return RES;
+
+ END;
+
+
+--<<<<<<<<< MCRD SETTINGS <<<<<<<<<<<<<<
+
+  function BT
+  /* Return format_error_stack + format_error_backtrace */
+  return varchar2
+  as
+  BEGIN
+    return (dbms_utility.format_error_stack||dbms_utility.format_error_backtrace);
+  END;
+
+
+
+
+
+end;
+
+
+
+/
+
+SHOW ERRORS;
