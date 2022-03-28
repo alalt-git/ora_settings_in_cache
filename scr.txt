@@ -1,11 +1,4 @@
---------------------------------------------------------------------------
--- Play this script in PARUS@DZMW_DEV to make it look like PARUS@DZMW_PRP
---
--- Please review the script before using it to make sure it won't
--- cause any unacceptable data loss.
---
--- PARUS@DZMW_DEV Schema Extracted by User ESV 
--- PARUS@DZMW_PRP Schema Extracted by User PARUS 
+
 
 CREATE TABLE MCRDKEP_SETTINGS
 (
